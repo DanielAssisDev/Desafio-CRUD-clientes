@@ -2,11 +2,15 @@ package com.danielassisdeveloper.atividade3.controllers;
 
 import com.danielassisdeveloper.atividade3.dto.ClientDTO;
 import com.danielassisdeveloper.atividade3.services.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 
 @RestController
@@ -26,4 +30,13 @@ public class ClientController {
     public ResponseEntity<ClientDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(clientService.findById(id));
     }
+
+    @PostMapping
+    public ResponseEntity<ClientDTO> insert(@Valid @RequestBody ClientDTO clientDTO) {
+        clientDTO = clientService.insert(clientDTO);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(clientDTO.getId()).toUri();
+        return ResponseEntity.created(uri).body(clientDTO);
+    }
+
 }
