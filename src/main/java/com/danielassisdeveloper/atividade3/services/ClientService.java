@@ -3,7 +3,6 @@ package com.danielassisdeveloper.atividade3.services;
 import com.danielassisdeveloper.atividade3.dto.ClientDTO;
 import com.danielassisdeveloper.atividade3.entities.Client;
 import com.danielassisdeveloper.atividade3.repositories.ClienteRepository;
-import com.danielassisdeveloper.atividade3.services.exceptions.DatabaseException;
 import com.danielassisdeveloper.atividade3.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,16 +53,12 @@ public class ClientService {
         }
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional
     public void delete(Long id) {
         if (!clientRepository.existsById(id)) {
             throw new ResourceNotFoundException("Recurso não encontrado.");
         }
-        try {
-            clientRepository.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException("Falha de integridade referencial.");
-        }
+        clientRepository.deleteById(id);
     }
 
     private void copyDTOToEntity(ClientDTO clientDTO, Client client) {
