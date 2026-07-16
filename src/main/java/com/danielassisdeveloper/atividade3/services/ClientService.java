@@ -18,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClientService {
 
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ClienteRepository clientRepository;
 
     @Transactional(readOnly = true)
     public Page<ClientDTO> findAll(Pageable pageable) {
         try {
-            return clienteRepository.findAll(pageable).map(ClientDTO::new);
+            return clientRepository.findAll(pageable).map(ClientDTO::new);
         } catch (RuntimeException e) {
             throw new ResourceNotFoundException("Não foi possível carregar os produtos.");
         }
@@ -31,23 +31,23 @@ public class ClientService {
 
     @Transactional(readOnly = true)
     public ClientDTO findById(Long id) {
-        return new ClientDTO(clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado.")));
+        return new ClientDTO(clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado.")));
     }
 
     @Transactional
     public ClientDTO insert(ClientDTO clientDTO) {
         Client client = new Client();
         copyDTOToEntity(clientDTO, client);
-        client = clienteRepository.save(client);
+        client = clientRepository.save(client);
         return new ClientDTO(client);
     }
 
     @Transactional
     public ClientDTO update(Long id, ClientDTO clientDTO) {
         try {
-            Client client = new Client();
+            Client client = clientRepository.getReferenceById(id);
             copyDTOToEntity(clientDTO, client);
-            client = clienteRepository.save(client);
+            client = clientRepository.save(client);
             return new ClientDTO(client);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Recurso não encontrado.");
@@ -56,18 +56,17 @@ public class ClientService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
-        if (!clienteRepository.existsById(id)) {
+        if (!clientRepository.existsById(id)) {
             throw new ResourceNotFoundException("Recurso não encontrado.");
         }
         try {
-            clienteRepository.deleteById(id);
+            clientRepository.deleteById(id);
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException("Falha de integridade referencial.");
         }
     }
 
     private void copyDTOToEntity(ClientDTO clientDTO, Client client) {
-        client.setId(clientDTO.getId());
         client.setName(clientDTO.getName());
         client.setCpf(clientDTO.getCpf());
         client.setIncome(clientDTO.getIncome());
