@@ -1,7 +1,7 @@
 package com.danielassisdeveloper.atividade3.services;
 
-import com.danielassisdeveloper.atividade3.dto.ClienteDTO;
-import com.danielassisdeveloper.atividade3.entities.Cliente;
+import com.danielassisdeveloper.atividade3.dto.ClientDTO;
+import com.danielassisdeveloper.atividade3.entities.Client;
 import com.danielassisdeveloper.atividade3.repositories.ClienteRepository;
 import com.danielassisdeveloper.atividade3.services.exceptions.DatabaseException;
 import com.danielassisdeveloper.atividade3.services.exceptions.ResourceNotFoundException;
@@ -15,40 +15,40 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ClienteService {
+public class ClientService {
 
     @Autowired
     private ClienteRepository clienteRepository;
 
     @Transactional(readOnly = true)
-    public Page<ClienteDTO> findAll(Pageable pageable) {
+    public Page<ClientDTO> findAll(Pageable pageable) {
         try {
-            return clienteRepository.findAll(pageable).map(ClienteDTO::new);
+            return clienteRepository.findAll(pageable).map(ClientDTO::new);
         } catch (RuntimeException e) {
             throw new ResourceNotFoundException("Não foi possível carregar os produtos.");
         }
     }
 
     @Transactional(readOnly = true)
-    public ClienteDTO findById(Long id) {
-        return new ClienteDTO(clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado.")));
+    public ClientDTO findById(Long id) {
+        return new ClientDTO(clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado.")));
     }
 
     @Transactional
-    public ClienteDTO insert(ClienteDTO clienteDTO) {
-        Cliente cliente = new Cliente();
-        copyDTOToEntity(clienteDTO, cliente);
-        cliente = clienteRepository.save(cliente);
-        return new ClienteDTO(cliente);
+    public ClientDTO insert(ClientDTO clientDTO) {
+        Client client = new Client();
+        copyDTOToEntity(clientDTO, client);
+        client = clienteRepository.save(client);
+        return new ClientDTO(client);
     }
 
     @Transactional
-    public ClienteDTO update(Long id, ClienteDTO clienteDTO) {
+    public ClientDTO update(Long id, ClientDTO clientDTO) {
         try {
-            Cliente cliente = new Cliente();
-            copyDTOToEntity(clienteDTO, cliente);
-            cliente = clienteRepository.save(cliente);
-            return new ClienteDTO(cliente);
+            Client client = new Client();
+            copyDTOToEntity(clientDTO, client);
+            client = clienteRepository.save(client);
+            return new ClientDTO(client);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Recurso não encontrado.");
         }
@@ -66,12 +66,12 @@ public class ClienteService {
         }
     }
 
-    private void copyDTOToEntity(ClienteDTO clienteDTO, Cliente cliente) {
-        cliente.setId(clienteDTO.getId());
-        cliente.setName(clienteDTO.getName());
-        cliente.setCpf(clienteDTO.getCpf());
-        cliente.setIncome(clienteDTO.getIncome());
-        cliente.setBirthDate(clienteDTO.getBirthDate());
-        cliente.setChildren(clienteDTO.getChildren());
+    private void copyDTOToEntity(ClientDTO clientDTO, Client client) {
+        client.setId(clientDTO.getId());
+        client.setName(clientDTO.getName());
+        client.setCpf(clientDTO.getCpf());
+        client.setIncome(clientDTO.getIncome());
+        client.setBirthDate(clientDTO.getBirthDate());
+        client.setChildren(clientDTO.getChildren());
     }
 }

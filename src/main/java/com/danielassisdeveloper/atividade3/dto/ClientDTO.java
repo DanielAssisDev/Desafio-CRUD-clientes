@@ -1,31 +1,28 @@
-package com.danielassisdeveloper.atividade3.entities;
+package com.danielassisdeveloper.atividade3.dto;
 
-import jakarta.persistence.*;
+import com.danielassisdeveloper.atividade3.entities.Client;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Entity
-@Table(name = "tb_cliente")
-public class Cliente {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ClientDTO {
     private Long id;
+    @NotBlank(message = "O nome não pode estar vazio.")
     private String name;
     private String cpf;
     private Double income;
+    @PastOrPresent(message = "A data de nascimento não pode ser futura.")
     private LocalDate birthDate;
     private Integer children;
 
-    public Cliente() {
-    }
-
-    public Cliente(Long id, String name, String cpf, Double income, LocalDate birthDate, Integer children) {
-        this.id = id;
-        this.name = name;
-        this.cpf = cpf;
-        this.income = income;
-        this.birthDate = birthDate;
-        this.children = children;
+    public ClientDTO(Client client) {
+        id = client.getId();
+        name = client.getName();
+        cpf = client.getCpf();
+        income = client.getIncome();
+        birthDate = client.getBirthDate();
+        children = client.getChildren();
     }
 
     public Long getId() {
@@ -80,8 +77,8 @@ public class Cliente {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
 
-        Cliente cliente = (Cliente) o;
-        return Objects.equals(id, cliente.id);
+        ClientDTO that = (ClientDTO) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
@@ -91,7 +88,7 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return "Cliente{" +
+        return "ClienteDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", cpf='" + cpf + '\'' +

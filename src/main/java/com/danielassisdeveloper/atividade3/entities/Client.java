@@ -1,28 +1,31 @@
-package com.danielassisdeveloper.atividade3.dto;
+package com.danielassisdeveloper.atividade3.entities;
 
-import com.danielassisdeveloper.atividade3.entities.Cliente;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class ClienteDTO {
+@Entity
+@Table(name = "tb_cliente")
+public class Client {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "O nome não pode estar vazio.")
     private String name;
     private String cpf;
     private Double income;
-    @PastOrPresent(message = "A data de nascimento não pode ser futura.")
     private LocalDate birthDate;
     private Integer children;
 
-    public ClienteDTO(Cliente cliente) {
-        id = cliente.getId();
-        name = cliente.getName();
-        cpf = cliente.getCpf();
-        income = cliente.getIncome();
-        birthDate = cliente.getBirthDate();
-        children = cliente.getChildren();
+    public Client() {
+    }
+
+    public Client(Long id, String name, String cpf, Double income, LocalDate birthDate, Integer children) {
+        this.id = id;
+        this.name = name;
+        this.cpf = cpf;
+        this.income = income;
+        this.birthDate = birthDate;
+        this.children = children;
     }
 
     public Long getId() {
@@ -77,8 +80,8 @@ public class ClienteDTO {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
 
-        ClienteDTO that = (ClienteDTO) o;
-        return Objects.equals(id, that.id);
+        Client client = (Client) o;
+        return Objects.equals(id, client.id);
     }
 
     @Override
@@ -88,7 +91,7 @@ public class ClienteDTO {
 
     @Override
     public String toString() {
-        return "ClienteDTO{" +
+        return "Cliente{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", cpf='" + cpf + '\'' +
